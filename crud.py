@@ -1,16 +1,62 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+def carregar_pets():
+    for item in tree.get_children():
+        tree.delete(item)
+    for pet in pets:
+        tree.insert('','end', values=(
+            pet['id'],
+            pet['tutor'],
+            pet['nome'],
+            pet['especie'],
+            pet['raca'],
+            pet['idade']
+        ))
 
+def adicionar_pets():
+    global next_pet_id
+    tutor = entry_tutor.get()
+    nome = entry_nome.get()
+    especie = entry_especie.get()
+    raca = entry_raca.get()
+    idade = entry_idade.get()
 
+    if not tutor or not nome:
+        messagebox.showerror('Erro',
+                             'Tutor e nome do pet são obrigatorios!')
+        return
 
+    try:
+        idade_int = int(idade) if idade else 0
+    except ValueError:
+        messagebox.showerror('Erro', 'Idade deve ser um numero inteiro')
+        return
+    
+    novo_pet = {
+        'id': next_pet_id,
+        'tutor': tutor,
+        'nome': nome,
+        'especie': especie,
+        'raca': raca,
+        'idade': idade_int,
+    }
+
+    pets.append(novo_pet)
+    next_pet_id += 1
+
+    messagebox.showinfo('Sucesso',
+        'Pet cadastrado com sucesso!')
+    
+    carregar_pets()
 
 pets = []
+
 next_pet_id = 1
 
 root = tk.Tk ()
 root.title('Sistema de cadastro de Pets')
-root.geometry('400x500')
+root.geometry('850x600')
 
 
 frame_form = ttk.LabelFrame(root,
@@ -76,7 +122,7 @@ frame_botoes.pack(pady=5)
 
 btn_adicionar = ttk.Button(frame_botoes,
                            text='Adicionar',
-                           command=None)
+                           command=adicionar_pets)
 btn_adicionar.grid(row=0, column=1, padx=5)
 
 btn_editar = ttk.Button(frame_botoes,
@@ -111,10 +157,21 @@ tree.heading("Idade", text='Idade')
 
 tree.pack(fill=tk.BOTH, expand=True)
 
+tree.column('ID', width=50)
+tree.column('Tutor', width=150)
+tree.column('Nome', width=100)
+tree.column('Espécie', width=100)
+tree.column('Raça', width=100)
+tree.column('Idade', width=50)
 
+scrollbar = ttk.Scrollbar(frame_tabela,
+                          orient='vertical',
+                          command=tree.yview)
+tree.configure(yscrollcommand=scrollbar.set)
 
-
-
-
-
+tree.pack(side='left', fill='both',
+          expand=True)
+scrollbar.pack(side='right', fill='y')
+0
+tree.bind('<<TreeviewSelect>>', None)
 root.mainloop()
