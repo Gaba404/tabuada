@@ -2,14 +2,41 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
 
+def carregar_de_json():
+    global pets, next_pet_id
+    
+    arquivo = filedialog.askopenfilename(
+        filetypes=[("Arquivos JSON", "*.json")],
+        title="Selecionar arquivo JSON para carregar"
+    )
+    
+    if not arquivo:  # Se o usuário cancelar
+        return
+    
+    try:
+        with open(arquivo, 'r', encoding='utf-8') as f:
+            pets_carregados = json.load(f)
+        
+        # Atualiza a lista de pets e o próximo ID
+        pets = pets_carregados
+        if pets:
+            next_pet_id=max(pet['id'] for pet in pets)+1
+        else:
+            next_pet_id = 1
+            
+        carregar_pets()
+        messagebox.showinfo("Sucesso", 
+           f"Dados carregados com sucesso de:\n{arquivo}")
+    except Exception as e:
+        messagebox.showerror("Erro", 
+            f"Ocorreu um erro ao carregar:\n{str(e)}")
+
+
+
 def salvar_para_json():
     if not pets:
         messagebox.showwarning('Aviso', 'Não há pets !')
         return
-    
-
-
-
 
     arquivo = filedialog.asksaveasfilename(
         defaultextension='.json',
@@ -22,7 +49,7 @@ def salvar_para_json():
 
     try:
         with open(arquivo, 'w', encoding='utf-8') as f:
-            json.dumb(pets, f, ensure_ascii=False, indent=4)
+            json.dump(pets, f, ensure_ascii=False, indent=4)
         messagebox.showinfo('Sucesso', f'Dados salvos com sucesso em:\n{arquivo}')
     except Exception as e:
         messagebox.showerror('Erro', f'Ocorreu um erro ao salvar:\n{str(e)}')
@@ -278,6 +305,11 @@ btn_salvarjson = ttk.Button(frame_botoes,
                            text='Salvar arquivo',
                            command=salvar_para_json)
 btn_salvarjson.grid(row=0, column=6, padx=5)
+
+btn_carregarjson = ttk.Button(frame_botoes,
+                           text='Carregar arquivo',
+                           command=carregar_de_json)
+btn_carregarjson.grid(row=0, column=7, padx=5)
 
 frame_tabela = ttk.Frame (root)
 frame_tabela.pack(padx=10, pady=5,
