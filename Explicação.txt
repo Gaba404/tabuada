@@ -1,0 +1,42 @@
+from PIL import Image, ImageDraw, ImageFont
+import textwrap
+
+# Dados dos comandos
+comandos = [
+    ("print()", "Exibe informações na tela"),
+    ("input()", "Recebe dados do usuário"),
+    ("if / elif / else", "Executa decisões lógicas"),
+    ("for / while", "Repetições de ações"),
+    ("def", "Define uma função"),
+    ("len()", "Retorna o tamanho de uma sequência"),
+    ("type()", "Retorna o tipo de dado"),
+    ("list / dict / tuple / set", "Cria estruturas de dados"),
+    ("import", "Importa bibliotecas ou módulos"),
+    ("return", "Retorna valores de uma função"),
+]
+
+# Criar a imagem
+img_width, img_height = 800, 600
+img = Image.new("RGB", (img_width, img_height), color="white")
+draw = ImageDraw.Draw(img)
+
+# Fonte (usar padrão se não houver personalizada)
+try:
+    font = ImageFont.truetype("arial.ttf", 20)
+except IOError:
+    font = ImageFont.load_default()
+
+# Título
+draw.text((10, 10), "Principais Comandos do Python", font=font, fill="black")
+
+# Escrevendo os comandos
+y_text = 50
+for cmd, desc in comandos:
+    linha = f"{cmd:<25} - {desc}"
+    wrapped_text = textwrap.wrap(linha, width=80)
+    for line in wrapped_text:
+        draw.text((10, y_text), line, font=font, fill="black")
+        y_text += 30
+
+# Mostrar a imagem
+img.show()
