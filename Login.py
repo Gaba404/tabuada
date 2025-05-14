@@ -14,13 +14,13 @@ def carregar_dados():
 
 def salvar_dados(dados):
     with open(ARQUIVO_DADOS, 'w', encoding= 'utf-8') as f:
-        json.dump(dados, f,ensure_ascii=False, indet=4)
+        json.dump(dados, f,ensure_ascii=False, indent=4)
 
 
 
 
 
-
+'''
 def criar_conta(login, usua, email, idade, data, senha):
     return{
     'login': login,
@@ -31,15 +31,20 @@ def criar_conta(login, usua, email, idade, data, senha):
     'senha': senha,
     }
 
+'''
 
 
-st.sidebar.title('Menu')
-opcao = st.sidebar.radio(
-    'Selecine uma opção',
-    ('Cadastrar Conta','Listar Contas',
-     'Editar Contas','Excluir Conta')
-)
-def cadastrar_conta():
+def criar_conta_dict(login, usua, email, idade, data, senha):
+    return {
+        'login': login,
+        'usuario': usua,
+        'email': email,
+        'idade': idade,
+        'data': data,
+        'senha': senha,
+    }
+
+def criar_conta():
     st.title('Cadastro de conta do jogo')
 
     st.write('Preencha os campos abaixo')
@@ -63,15 +68,86 @@ def cadastrar_conta():
     col1, col3, col2, col4, col5 = st.columns(5)
 
     with col1:
-        st.button("Criar")
-
+        submit_button = st.form_submit_button("Cadastrar Conta")
+    
+    if submit_button:
+        if not email or not login:
+            st.error("Email e login são campos obrigatórios!")
+            return
+        
+        dados = carregar_dados()
+        
+        if email in dados:
+            st.error("Conta com este Email já cadastrado!")
+            return
+        
+        conta = criar_conta(
+               login = login,
+        usua = usua,
+        email = email,
+        idade = data.strftime("%d/%m/%Y"),
+        data = data,
+        senha = senha
+        )
+        
+        dados[email] = login
+        salvar_dados(dados)
+        
+        st.success("Conta cadastrada com sucesso!")
+        st.balloons()
 
     with col5:
         st.button("Já tenho login")
 
+
+
+
+
+
+
+
+
+
+
 def listar_contas():
-    st.title('Lista ')
-    pass
+    st.subheader("Listar contas")
+    
+    dados = carregar_dados()
+    
+    if not dados:
+        st.info("Nenhuma conta cadastrada ainda.")
+        return
+    
+    # Filtro por nome
+    filtro_nome = st.text_input("Filtrar por nome:")
+    
+    contas_filtrados = []
+    for gmail, login in dados.items():
+        if filtro_nome.lower() in login["nome"].lower():
+            contas_filtrados.append((gmail, login))
+    
+    if not contas_filtrados:
+        st.warning("Nenhuma conta encontrada com o filtro aplicado.")
+        return
+    
+    for gmail, login in contas_filtrados:
+        with st.expander(f"{login['Login']} - Gmail: {gmail}"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.write(f"**Login:** {login['login']}")
+                st.write(f"**Usuaro:** {login['Usuario']}")
+                st.write(f"**Email:** {login['Email']}")
+            
+            with col2:
+                st.write(f"**Telefone:** {login['telefone']}")
+                st.write(f"**E-mail:** {login['email']}")
+                st.write(f"**Cadastrado em:** {login['data_cadastro']}")
+            
+            if login["historico_Conta"]:
+                st.write("**Histórico de Conta:**")
+                for item in login["historico_Contas"]:
+                    st.write(f"- {item}")
 
 def editar_contas():
     pass
@@ -79,11 +155,16 @@ def editar_contas():
 def excluir_conta():
     pass
 
-
+st.sidebar.title('Menu')
+opcao = st.sidebar.radio(
+    'Selecine uma opção',
+    ('Cadastrar Conta','Listar Contas',
+     'Editar Contas','Excluir Conta')
+)
 
 
 if opcao == 'Cadastrar Conta':
-    cadastrar_conta()
+    criar_conta()
 elif opcao == 'Listar Contas':
     listar_contas()
 elif opcao == 'Editar Contas':
