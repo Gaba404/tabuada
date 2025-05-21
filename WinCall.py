@@ -29,7 +29,7 @@ def fnDivisao():
 #Codigo da janela
 ja = tk.Tk()
 ja.title('Advanced calculator')
-ja.geometry('450x600')
+ja.geometry('1580x1024')
 
 #titulo do aplicativo
 titulo = tk.Label(ja,

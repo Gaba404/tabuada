@@ -3,6 +3,7 @@ import json
 import os
 import datetime
 
+
 # ===================== ESTILO PERSONALIZADO =====================
 st.set_page_config(page_title="Sistema de Contas", layout="wide")
 
@@ -51,12 +52,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ===================== CABEÇALHO COM IMAGEM =====================
-st.image("https://cdn-icons-png.flaticon.com/512/1208/1208852.png", width=50)
-st.title("🌐 Sistema de Gerenciamento de Contas")
+st.title("💾 Cadastro de Conta ")
 st.caption("Organize, edite e gerencie usuários com facilidade")
 
 # ===================== JSON =====================
-ARQUIVO_DADOS = "Conta.json"
+ARQUIVO_DADOS = "Arquivo.json"
 
 def carregar_dados():
     if os.path.exists(ARQUIVO_DADOS):
@@ -83,6 +83,13 @@ def criar_conta(login, usua, email, idade, data, senha):
 
 def cadastrar_conta():
     st.subheader("📋 Cadastrar Nova Conta")
+
+
+
+
+
+
+
 
     with st.form(key="form_cadastro"):
         login = st.text_input('👤 Nome para login')

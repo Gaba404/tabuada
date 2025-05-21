@@ -21,7 +21,7 @@ label = tkinter.Label(root,
 
 label.pack(padx=10,pady=10)
 
-imput = tkinter.Entry(root, width=50)
+imput = tkinter.Entry(root, width=100)
 imput.pack(padx=5, pady=5)
 
 #botão
